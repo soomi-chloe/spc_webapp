@@ -97,7 +97,7 @@ if has_pca:
         val = cap[key]
         with col:
             fig_g = plot_capability_gauge(val, key)
-            st.plotly_chart(fig_g, use_container_width=True)
+            st.plotly_chart(fig_g, use_container_width=True, key=f"dash_gauge_{key}")
 else:
     st.info("📊 공정능력분석을 먼저 수행해주세요.")
 
@@ -195,11 +195,9 @@ if has_spc:
     chart_type = st.session_state.get('spc_chart_type', 'Xbar-R')
     var_name_spc = st.session_state.get('spc_var_name', 'value')
 
-    if 'spc_chart_fig' in st.session_state:
-        st.plotly_chart(st.session_state.spc_chart_fig, use_container_width=True)
-    else:
-        fig_spc = plot_control_chart(charts, chart_type, var_name_spc)
-        st.plotly_chart(fig_spc, use_container_width=True)
+    # session_state의 fig를 재사용하면 plotly 내부 ID 충돌이 발생할 수 있으므로 항상 새로 생성
+    fig_spc = plot_control_chart(charts, chart_type, var_name_spc)
+    st.plotly_chart(fig_spc, use_container_width=True, key="dash_spc_chart_new")
 
     # 이상점 요약
     for i, chart_df in enumerate(charts):

@@ -210,7 +210,7 @@ try:
 
     # 관리도 시각화
     fig = plot_control_chart(charts, chart_type, var_name)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, key="spc_main_chart")
 
     # 세션 상태에 차트 저장
     st.session_state.spc_charts = charts
@@ -283,12 +283,15 @@ if data_type == "variable" and len(all_ooc) > 0:
                 tab_before, tab_after, tab_compare = st.tabs(["📊 이전 관리도", "📊 재작성 관리도", "📋 관리한계 비교"])
 
                 with tab_before:
-                    st.plotly_chart(fig, use_container_width=True)
+                    # 동일 fig 재사용 시 plotly 내부 ID 충돌 방지를 위해 새 figure 생성
+                    fig_before = plot_control_chart(charts, chart_type, var_name)
+                    fig_before.update_layout(title=f'{chart_type} 관리도 (이상치 제거 전) - {var_name}')
+                    st.plotly_chart(fig_before, use_container_width=True, key="spc_chart_before")
 
                 with tab_after:
                     fig_revised = plot_control_chart(charts_revised, chart_type, var_name)
                     fig_revised.update_layout(title=f'{chart_type} 관리도 (이상치 제거 후) - {var_name}')
-                    st.plotly_chart(fig_revised, use_container_width=True)
+                    st.plotly_chart(fig_revised, use_container_width=True, key="spc_chart_revised")
 
                     # 재작성 후 이상점 확인
                     for j, chart_df_r in enumerate(charts_revised):

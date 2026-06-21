@@ -164,10 +164,10 @@ with tab_stats:
 col_v1, col_v2 = st.columns(2)
 with col_v1:
     fig_box = plot_boxplot(df, LSL, USL)
-    st.plotly_chart(fig_box, use_container_width=True)
+    st.plotly_chart(fig_box, use_container_width=True, key="pca_boxplot")
 with col_v2:
     fig_hist = plot_histogram(df, LSL, USL)
-    st.plotly_chart(fig_hist, use_container_width=True)
+    st.plotly_chart(fig_hist, use_container_width=True, key="pca_histogram")
 
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
@@ -197,7 +197,7 @@ with col_n3:
 
 # Q-Q Plot
 fig_qq = plot_qq(df)
-st.plotly_chart(fig_qq, use_container_width=True)
+st.plotly_chart(fig_qq, use_container_width=True, key="pca_qq")
 
 # Box-Cox 변환 (정규성 불만족 시)
 use_transformed = False
@@ -218,7 +218,7 @@ if not is_normal:
 
             # 변환 전후 비교
             fig_bc = plot_boxcox_comparison(data_values, data_transformed, lambda_val)
-            st.plotly_chart(fig_bc, use_container_width=True)
+            st.plotly_chart(fig_bc, use_container_width=True, key="pca_boxcox_compare")
 
             # 변환된 데이터로 규격도 변환
             LSL_t = boxcox([LSL], lmbda=lambda_val)[0] if LSL > 0 else LSL
@@ -260,7 +260,7 @@ for col, key, label, desc in zip(
     judge_text, judge_color = judge_capability(val)
     with col:
         fig_gauge = plot_capability_gauge(val, label)
-        st.plotly_chart(fig_gauge, use_container_width=True)
+        st.plotly_chart(fig_gauge, use_container_width=True, key=f"pca_gauge_{key}")
         st.markdown(f"<div style='text-align:center;'>"
                     f"<span style='color:{judge_color}; font-weight:700; font-size:1.1rem;'>"
                     f"{judge_text}</span></div>", unsafe_allow_html=True)
@@ -295,7 +295,7 @@ if use_transformed:
 else:
     fig_pca = plot_process_capability(df, LSL, USL, cap_result)
 
-st.plotly_chart(fig_pca, use_container_width=True)
+st.plotly_chart(fig_pca, use_container_width=True, key="pca_overall")
 
 # ─── 판정 및 권장사항 ───
 st.markdown('<div class="section-header">5️⃣ 판정 및 권장사항</div>', unsafe_allow_html=True)
